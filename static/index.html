@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepBrain — CertainLogic</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --green: #3fb950; --gold: #d29922; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+.container { max-width: 720px; margin: 0 auto; padding: 60px 24px; }
+h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
+h1 span { color: var(--accent); }
+.subtitle { color: var(--text-dim); font-size: 16px; margin-bottom: 40px; line-height: 1.5; }
+.tag { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-bottom: 24px; }
+.tag.green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+.card h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.card p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+code { background: rgba(88,166,255,0.1); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'SF Mono', 'Cascadia Code', monospace; }
+pre { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 16px; overflow-x: auto; margin: 12px 0; }
+pre code { background: none; padding: 0; font-size: 12px; line-height: 1.6; color: var(--text); }
+.btn { display: inline-block; padding: 10px 24px; border-radius: 6px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; border: none; }
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.primary:hover { opacity: 0.9; }
+.key-input-area { display: flex; gap: 8px; margin: 16px 0; }
+.key-input-area input { flex: 1; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 14px; font-family: 'SF Mono', monospace; outline: none; }
+.key-input-area input:focus { border-color: var(--accent); }
+.launch-area { margin: 32px 0; }
+.status-bar { display: flex; gap: 24px; margin: 24px 0; flex-wrap: wrap; }
+.status-item { font-size: 13px; color: var(--text-dim); }
+.status-item .val { color: var(--green); font-weight: 600; }
+.footer { text-align: center; color: var(--text-dim); font-size: 12px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="container">
+  
+  <span class="tag green">● BETA — Pre-Release Access</span>
+  
+  <h1><span>DeepBrain</span> v2</h1>
+  <p class="subtitle">
+    Browser-based coding agent with cryptographic memory.<br>
+    Timechain-backed. Deterministic. Verifiable.
+  </p>
+
+  <div class="status-bar">
+    <div class="status-item">Status: <span class="val">Operational</span></div>
+    <div class="status-item">Chain: <span class="val" id="chainHeight">—</span></div>
+    <div class="status-item">Version: <span class="val">2.0</span></div>
+  </div>
+
+  <div class="card">
+    <h3>Enter Your API Key</h3>
+    <p>Your key was provided by Anton. Paste it below to launch the full DeepBrain interface.</p>
+    <div class="key-input-area">
+      <input type="text" id="apiKeyInput" placeholder="Paste your API key..." autocomplete="off" spellcheck="false">
+      <button class="btn primary" onclick="launchApp()">Launch →</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Quickstart (CLI)</h3>
+    <pre><code>curl -X POST https://deepbrain.certainlogic.ai/api/chat \
+  -H "X-API-Key: your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"message":"write fibonacci in python"}'</code></pre>
+  </div>
+
+  <div class="card">
+    <h3>Capabilities</h3>
+    <p>
+      Code generation &amp; execution · Multi-turn reasoning · Cryptographic audit trails ·<br>
+      Git commit integration · 3-attempts-reset recovery · Timechain memory
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Verify Your Outputs</h3>
+    <p>
+      Every code result is sealed to a tamper-evident timechain. 
+      Verify outputs with HMAC-SHA256 hash checking. 
+      <a href="/api/health" style="color: var(--accent);">API Health</a>
+    </p>
+  </div>
+
+  <div class="footer">
+    DeepBrain v2 · CertainLogic · &copy; 2026
+  </div>
+</div>
+
+<script>
+// Check for saved key
+const saved = sessionStorage.getItem('deepbrain_api_key');
+if (saved) document.getElementById('apiKeyInput').value = saved;
+
+function launchApp() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key) { alert('Enter your API key first.'); return; }
+  sessionStorage.setItem('deepbrain_api_key', key);
+  window.location.href = '/app';
+}
+
+document.getElementById('apiKeyInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') launchApp();
+});
+
+fetch('/api/health').then(r => r.json()).then(d => {
+  document.getElementById('chainHeight').textContent = d.chain_height || d.status || 'live';
+}).catch(() => {
+  document.getElementById('chainHeight').textContent = 'live';
+});
+</script>
+</body>
+</html>

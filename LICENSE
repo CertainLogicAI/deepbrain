@@ -1,0 +1,35 @@
+Business Source License 1.1
+
+License text copyright (c) 2017 MariaDB Corporation Ab, All Rights Reserved.
+"Business Source License" is a trademark of MariaDB Corporation Ab.
+
+Parameters
+
+Licensor:             CertainLogic <anton@certainlogic.ai>
+Licensed Work:        DeepBrain — Browser-Based Agent Framework
+                      The Licensed Work is (c) 2026 CertainLogic
+Additional Use Grant: You may use the Licensed Work for non-production
+                      evaluation, testing, personal use, educational use,
+                      and production use by any individual or organization
+                      with no more than 3 employees and under $100K USD
+                      annual revenue.
+Change Date:          2029-07-11
+Change License:       Apache License, Version 2.0
+
+For full license terms, see https://mariadb.com/bsl11/
+
+All CertainLogic code in this repository is subject to this License.
+Commercial use requires a license from CertainLogic.
+
+---
+
+NOTICE:
+
+DeepBrain is an agent framework. The framework code is licensed under BSL 1.1.
+The models DeepBrain routes to (including but not limited to DeepSeek, Flash,
+Qwen, Kimi) are independently owned and licensed by their respective providers.
+Access to certain model providers through CertainLogic's infrastructure is a
+separate commercial service not covered by this license.
+
+CertainLogic's competitive advantage comes from model quality and proprietary
+model access — not from gatekeeping the framework this code provides.

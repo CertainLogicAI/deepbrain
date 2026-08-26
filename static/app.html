@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepBrain</title>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; }
+
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; }
+
+/* Header */
+.header { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.header h1 { font-size: 16px; font-weight: 600; }
+.header h1 span { color: var(--accent); }
+.header .status { display: flex; gap: 12px; font-size: 12px; }
+.header .status .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.dot.green { background: var(--green); } .dot.yellow { background: var(--yellow); } .dot.red { background: var(--red); }
+
+/* Main layout */
+.main { display: flex; flex: 1; overflow: hidden; }
+
+/* Left: Chat */
+.chat-panel { width: 400px; min-width: 300px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 12px; }
+.chat-input-area { padding: 10px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+.chat-input-area input { flex: 1; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; }
+.chat-input-area input:focus { border-color: var(--accent); }
+.chat-input-area button { padding: 8px 16px; background: var(--accent); border: none; border-radius: 6px; color: #fff; font-weight: 600; cursor: pointer; font-size: 13px; }
+.chat-input-area button:disabled { opacity: 0.5; cursor: default; }
+
+/* Message bubbles */
+.msg { margin-bottom: 12px; max-width: 100%; }
+.msg.user { text-align: right; }
+.msg.user .bubble { background: var(--accent); color: #fff; }
+.msg.assistant .bubble { background: var(--surface); border: 1px solid var(--border); }
+.msg .bubble { display: inline-block; padding: 8px 12px; border-radius: 8px; font-size: 13px; line-height: 1.5; text-align: left; max-width: 90%; white-space: pre-wrap; word-break: break-word; }
+.msg .meta { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+.msg .meta .tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; margin-right: 4px; }
+.tag.tc { background: #1a3a2a; color: var(--green); }
+.tag.deepseek { background: #1a2a3a; color: var(--accent); }
+.tag.flash { background: #3a2a1a; color: var(--yellow); }
+.tag.error { background: #3a1a1a; color: var(--red); }
+.tag.sealed { background: #1a3a1a; color: var(--green); }
+
+/* Right: Editor + Terminal */
+.editor-panel { flex: 1; display: flex; flex-direction: column; }
+.editor-container { flex: 1; position: relative; }
+.terminal-container { height: 200px; min-height: 100px; background: #0a0e14; border-top: 1px solid var(--border); display: flex; flex-direction: column; }
+.terminal-container .term-header { padding: 6px 12px; background: #0d1117; border-bottom: 1px solid var(--border); font-size: 11px; color: var(--text-dim); display: flex; gap: 12px; }
+.terminal-container .term-header .exit-ok { color: var(--green); }
+.terminal-container .term-header .exit-err { color: var(--red); }
+.terminal-container pre { flex: 1; padding: 8px 12px; font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 12px; overflow: auto; color: #e6edf3; margin: 0; white-space: pre-wrap; }
+
+/* Tier selector */
+.tier-select { display: flex; gap: 4px; padding: 8px 12px; border-top: 1px solid var(--border); }
+.tier-select button { padding: 4px 10px; font-size: 11px; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--text-dim); cursor: pointer; }
+.tier-select button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Thought indicator */
+.thinking { display: flex; align-items: center; gap: 6px; padding: 6px 0; color: var(--text-dim); font-size: 12px; }
+.thinking .spinner { width: 12px; height: 12px; border: 2px solid var(--border); border-top: 2px solid var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .main { flex-direction: column; }
+  .chat-panel { width: 100%; min-width: unset; height: 40vh; border-right: none; border-bottom: 1px solid var(--border); }
+  .editor-container { height: 30vh; }
+  .terminal-container { height: 30vh; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span>Deep</span>Brain</h1>
+  <div class="status">
+    <span><span class="dot green" id="dot-tc"></span>Timechain</span>
+    <span><span class="dot green" id="dot-ds"></span>DeepSeek</span>
+    <span><span class="dot yellow" id="dot-flash"></span>Flash</span>
+    <span><span class="dot yellow" id="dot-wgpu"></span>WebGPU</span>
+    <span><span class="dot green" id="dot-cog"></span>Cognitive</span>
+  </div>
+</div>
+
+<div class="main">
+  <!-- Chat Panel -->
+  <div class="chat-panel">
+    <div class="chat-messages" id="messages">
+      <div class="msg assistant">
+        <div class="bubble">DeepBrain ready. 75K execution traces loaded. Ask me to code something.</div>
+      </div>
+    </div>
+    <div class="tier-select">
+      <button class="active" data-tier="auto">Auto</button>
+      <button data-tier="local">Local</button>
+      <button data-tier="kimi">Kimi K3</button>
+      <button data-tier="flash">Flash</button>
+      <button data-tier="browser">Browser GPU</button>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="query-input" placeholder="Ask DeepBrain to code..." />
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+
+  <!-- Editor + Terminal -->
+  <div class="editor-panel">
+    <div class="editor-container" id="editor-container"></div>
+    <div class="terminal-container">
+      <div class="term-header">
+        <span>Output</span>
+        <span class="exit-ok" id="exit-badge">exit 0</span>
+        <span style="flex:1"></span>
+        <span id="source-badge" style="color:var(--text-dim)">ready</span>
+        <button id="run-btn" style="background:var(--green);color:#fff;border:none;padding:2px 10px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:600;margin-left:8px;">Run</button>
+        <button id="run-btn" style="background:var(--green);color:#fff;border:none;padding:2px 10px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:600;margin-left:8px;">Run</button>
+      </div>
+      <pre id="terminal-output">Waiting for execution...</pre>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Monaco Editor ──────────────────────────────────────────────
+let editor;
+
+require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' } });
+require(['vs/editor/editor.main'], function() {
+  editor = monaco.editor.create(document.getElementById('editor-container'), {
+    value: `# DeepBrain will generate code here\n# Or type your own code and run it\n\ndef hello():\n    return "DeepBrain is alive!"\n\nprint(hello())`,
+    language: 'python',
+    theme: 'vs-dark',
+    fontSize: 13,
+    fontFamily: "'Cascadia Code', 'Fira Code', monospace",
+    minimap: { enabled: false },
+    automaticLayout: true,
+    padding: { top: 8 },
+    bracketPairColorization: { enabled: true },
+  });
+
+  // Resize handler
+  window.addEventListener('resize', () => editor.layout());
+});
+
+// ── State ──────────────────────────────────────────────────────
+let sessionId = Math.random().toString(36).slice(2, 10);
+let currentTier = 'auto';
+let isProcessing = false;
+
+// ── DOM Ref ────────────────────────────────────────────────────
+const messages = document.getElementById('messages');
+const queryInput = document.getElementById('query-input');
+const sendBtn = document.getElementById('send-btn');
+const terminalOutput = document.getElementById('terminal-output');
+const exitBadge = document.getElementById('exit-badge');
+const sourceBadge = document.getElementById('source-badge');
+
+// ── Tier Selector ──────────────────────────────────────────────
+document.querySelectorAll('.tier-select button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tier-select button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTier = btn.dataset.tier;
+  });
+});
+
+// ── Send Message ───────────────────────────────────────────────
+sendBtn.addEventListener('click', sendQuery);
+queryInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendQuery(); } });
+
+function addMessage(role, text, meta = {}) {
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  let metaHtml = '';
+  if (meta.source) {
+    metaHtml += `<span class="tag ${meta.source}">${meta.source}</span>`;
+  }
+  if (meta.note) {
+    metaHtml += `<span style="font-size:10px;color:var(--text-dim)">${meta.note}</span>`;
+  }
+  if (meta.sealed) {
+    metaHtml += `<span class="tag sealed">sealed ✓</span>`;
+  }
+  div.innerHTML = `<div class="bubble">${text}</div>${metaHtml ? `<div class="meta">${metaHtml}</div>` : ''}`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function showThinking() {
+  const div = document.createElement('div');
+  div.className = 'msg assistant';
+  div.id = 'thinking-indicator';
+  div.innerHTML = '<div class="thinking"><div class="spinner"></div>Thinking...</div>';
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function removeThinking() {
+  const el = document.getElementById('thinking-indicator');
+  if (el) el.remove();
+}
+
+function setCode(code) {
+  if (!editor) return;
+  const lang = detectLanguage(code);
+  const model = monaco.editor.getModel(editor.getModel().uri);
+  monaco.editor.setModelLanguage(model, lang);
+  editor.setValue(code);
+}
+
+function detectLanguage(code) {
+  if (code.startsWith('def ') || code.startsWith('import ') || code.startsWith('class ') || code.includes('print(') || code.includes('lambda ')) return 'python';
+  if (code.startsWith('fn ') || code.startsWith('pub ') || code.startsWith('let ') || code.includes('->')) return 'rust';
+  if (code.startsWith('function ') || code.startsWith('const ') || code.startsWith('let ') || code.startsWith('var ') || code.includes('console.log') || code.includes('=>')) return 'javascript';
+  if (code.startsWith('#!/') || code.startsWith('echo ') || code.includes('$(')) return 'shell';
+  return 'python';
+}
+
+// ── WebGPU WebLLM Engine ──────────────────────────────────────
+// Runs qwen2.5-coder-1.5b in-browser on user's GPU (3-5s, zero server cost)
+let webllmEngine = null;
+let webllmLoading = false;
+let webllmLoaded = false;
+
+async function initWebLLM() {
+  if (webllmLoaded || webllmLoading) return;
+  webllmLoading = true;
+  const wgpuDot = document.getElementById('dot-wgpu');
+  wgpuDot.className = 'dot yellow';
+  try {
+    if (!navigator.gpu) {
+      addMessage('assistant', '\u26a0\ufe0f WebGPU not available in this browser. Use Chrome 113+ or Edge 113+.');
+      wgpuDot.className = 'dot red';
+      webllmLoading = false;
+      return;
+    }
+    const { CreateMLCEngine } = await import('https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2/+esm');
+    wgpuDot.className = 'dot yellow';
+    webllmEngine = await CreateMLCEngine('Qwen2.5-Coder-1.5B', {
+      initProgressCallback: (p) => {
+        if (p.text.includes('loading') || p.text.includes('cache')) {
+          wgpuDot.title = p.text;
+        }
+      },
+    });
+    webllmLoaded = true;
+    wgpuDot.className = 'dot green';
+    addMessage('assistant', '\u2705 WebGPU loaded \u2014 qwen2.5-coder-1.5b running in browser.');
+  } catch (e) {
+    wgpuDot.className = 'dot red';
+    console.warn('WebLLM init failed:', e);
+    addMessage('assistant', '\u26a0\ufe0f WebGPU init failed: ' + e.message + '. Falling back to server.');
+  }
+  webllmLoading = false;
+}
+
+async function callWebLLM(prompt, system) {
+  if (!webllmLoaded || !webllmEngine) {
+    return { text: null, error: 'WebGPU not loaded' };
+  }
+  try {
+    const messages = [];
+    if (system) messages.push({ role: 'system', content: system });
+    messages.push({ role: 'user', content: prompt });
+    const reply = await webllmEngine.chat.completions.create({
+      messages,
+      max_tokens: 4096,
+      temperature: 0.1,
+    });
+    return { text: reply.choices[0].message.content, error: null };
+  } catch (e) {
+    return { text: null, error: e.message };
+  }
+}
+
+// ── Streaming Chat ─────────────────────────────────────────────
+async function sendQuery() {
+  const query = queryInput.value.trim();
+  if (!query || isProcessing) return;
+
+  queryInput.value = '';
+  isProcessing = true;
+  sendBtn.disabled = true;
+
+  addMessage('user', query);
+  showThinking();
+
+  // Browser-tier: use WebGPU WebLLM directly, no server call
+  if (currentTier === 'browser') {
+    try {
+      if (!webllmLoaded) {
+        addMessage('assistant', 'Loading WebGPU engine first time...', {});
+        await initWebLLM();
+        if (!webllmLoaded) {
+          removeThinking();
+          addMessage('assistant', 'WebGPU failed to load. Try Auto or Flash tier.', { source: 'error' });
+          isProcessing = false;
+          sendBtn.disabled = false;
+          return;
+        }
+      }
+      const system = 'You are DeepBrain, a senior software engineer. Write complete, correct code. Return ONLY a single code block with the implementation.';
+      const result = await callWebLLM(query, system);
+      removeThinking();
+      if (result.text) {
+        fullResponse = result.text;
+        addMessage('assistant', result.text, { source: 'browser' });
+        const codeMatch = result.text.match(/```(\w+)?
+([\s\S]*?)```/);
+        if (codeMatch) {
+          setCode(codeMatch[2].trim());
+        }
+      } else {
+        addMessage('assistant', 'Error: ' + (result.error || 'No response'), { source: 'error' });
+      }
+    } catch (e) {
+      removeThinking();
+      addMessage('assistant', 'Error: ' + e.message, { source: 'error' });
+    }
+    isProcessing = false;
+    sendBtn.disabled = false;
+    queryInput.focus();
+    return;
+  }
+
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'X-API-Key': sessionStorage.getItem('deepbrain_api_key') || '',  'Content-Type': 'application/json', 'X-API-Key': sessionStorage.getItem('deepbrain_api_key') || '' },
+      body: JSON.stringify({ query, session_id: sessionId, tier: currentTier }),
+    });
+
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let fullResponse = '';
+    let lastSource = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const data = JSON.parse(line.slice(6));
+          
+          switch (data.type) {
+            case 'status':
+              sourceBadge.textContent = data.status;
+              if (data.source) lastSource = data.source;
+              if (data.source === 'deepseek') {
+                document.getElementById('dot-ds').className = 'dot green';
+              } else if (data.source === 'flash') {
+                document.getElementById('dot-flash').className = 'dot green';
+              }
+              break;
+            case 'text':
+              fullResponse += data.text;
+              break;
+            case 'exec_result':
+              terminalOutput.textContent = data.stdout || data.stderr || '(no output)';
+              exitBadge.textContent = `exit ${data.exit_code}`;
+              exitBadge.className = data.exit_code === 0 ? 'exit-ok' : 'exit-err';
+              break;
+                        case 'committed':
+              addMessage('assistant', '✅ Code committed to git', {});
+              break;
+            case 'sealed':
+              addMessage('assistant', '🔗 Sealed to timechain', {});
+              break;
+            case 'done':
+              removeThinking();
+              addMessage('assistant', fullResponse, { source: lastSource });
+              // Extract code from response
+              const codeMatch = fullResponse.match(/```(\w+)?\n([\s\S]*?)```/);
+              if (codeMatch) {
+                setCode(codeMatch[2].trim());
+              }
+              break;
+          }
+        } catch (e) {
+          console.warn('Parse error:', e, line);
+        }
+      }
+    }
+  } catch (err) {
+    removeThinking();
+    addMessage('assistant', `Error: ${err.message}`, { source: 'error' });
+  }
+
+  isProcessing = false;
+  sendBtn.disabled = false;
+  queryInput.focus();
+}
+
+
+// ── Run Button ────────────────────────────────────────────────
+document.getElementById('run-btn').addEventListener('click', async () => {
+  if (!editor) return;
+  const code = editor.getValue();
+  const lang = detectLanguage(code);
+  const to = document.getElementById('terminal-output');
+  const eb = document.getElementById('exit-badge');
+  to.textContent = 'Running...';
+  eb.textContent = 'running';
+  eb.className = '';
+  try {
+    const resp = await fetch('/api/execute', {
+      method: 'POST',
+      headers: { 'X-API-Key': sessionStorage.getItem('deepbrain_api_key') || '',  'Content-Type': 'application/json', 'X-API-Key': sessionStorage.getItem('deepbrain_api_key') || '' },
+      body: JSON.stringify({ code, language: lang }),
+    });
+    const result = await resp.json();
+    to.textContent = result.stdout || result.stderr || result.error || '(no output)';
+    eb.textContent = 'exit ' + result.exit_code;
+    eb.className = result.exit_code === 0 ? 'exit-ok' : 'exit-err';
+  } catch (e) {
+    to.textContent = 'Error: ' + e.message;
+    eb.textContent = 'error';
+    eb.className = 'exit-err';
+  }
+});
+
+// ── Keyboard shortcut: Ctrl+Enter to run
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    document.getElementById('run-btn').click();
+  }
+});
+
+// ── Health Check ───────────────────────────────────────────────
+async function checkHealth() {
+  try {
+    const resp = await fetch('/api/health');
+    const data = await resp.json();
+    if (data.dependencies) {
+      document.getElementById('dot-tc').className = `dot ${data.dependencies.timechain ? 'green' : 'red'}`;
+      document.getElementById('dot-ds').className = `dot ${data.dependencies.deepseek ? 'green' : 'red'}`;
+    }
+  } catch (e) {
+    console.warn('Health check failed:', e);
+  }
+}
+
+checkHealth();
+setInterval(checkHealth, 30000);
+
+// Auto-init WebGPU on page load (user's GPU, zero server cost)
+setTimeout(() => {
+  if (navigator.gpu) {
+    initWebLLM();
+  }
+}, 3000);
+</script>
+</body>
+</html>
