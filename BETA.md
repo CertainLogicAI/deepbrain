@@ -2,7 +2,7 @@
 
 ## What is it?
 
-A browser-based coding agent with 75K proven execution traces in memory. You type what you want. It generates code, runs it in a sandbox, verifies it works, and shows you the result. If it's a pattern we've solved before, it returns the proven solution instantly.
+A browser-based coding agent with a proprietary execution memory. You type what you want. It generates code, runs it in a sandbox, verifies it works, and shows you the result. If it's a pattern the system has stored before, it can return the cached solution.
 
 ## How to connect
 
@@ -13,7 +13,7 @@ A browser-based coding agent with 75K proven execution traces in memory. You typ
 
 ```
 [Chat] Type: "write a fibonacci function"
-  → Timechain check (75K traces)
+  → Timechain check (proprietary execution memory)
   → DeepSeek generates code (local, runs on CPU)
   → Executes in sandbox, exit 0, prints 120
   → Shows you the code + output
@@ -26,7 +26,7 @@ A browser-based coding agent with 75K proven execution traces in memory. You typ
 - **Execute code** in a sandbox (Python, JS, Shell)
 - **Edit code** in the Monaco editor (syntax highlighting, auto-complete)
 - **Run your own code** — click the "Run" button or Ctrl+Enter
-- **Remember patterns** — once it solves something, it remembers forever
+- **Remember patterns** — cached solutions are stored for reuse
 
 ## What it can't do (yet)
 
@@ -47,14 +47,14 @@ A browser-based coding agent with 75K proven execution traces in memory. You typ
 
 - DeepSeek-Coder-V2-Lite 16B (Q4) — runs on CPU, ~5-15s per generation
 - Falls back to Flash (OpenRouter) if DeepSeek fails
-- Timechain replay at 0.55 threshold — ~70% cache hit rate for common coding patterns
+- Timechain replay — cache hit rate available under NDA
 - 120s timeout for generation + execution
 
 ## Tech stack
 
 ```
 Browser (Monaco editor + terminal) ← SSE → DeepBrain server (Flask/Gunicorn)
-  ├── Timechain API (75K execution rings)
+  ├── Timechain API (proprietary execution memory)
   ├── DeepSeek-Coder-V2-Lite 16B (Ollama, CPU)
   └── Flash (OpenRouter, fallback)
 ```

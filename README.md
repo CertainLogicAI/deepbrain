@@ -10,7 +10,7 @@ A browser-based coding agent framework with **timechain memory, multi-model rout
 
 DeepBrain is an agent framework that routes requests through:
 
-- **Timechain memory** — 75K+ proven execution traces. If it's a pattern solved before, it returns the proven solution instantly.
+- **Timechain memory** — proprietary execution memory (append-only chain of past code executions). If it's a pattern the system has stored before, it can return the cached solution. Scale and metrics available under NDA.
 - **Multi-model routing** — routes to the best model for the task (Flash, Qwen 3.6, DeepSeek, Kimi, local)
 - **Cognitive engine** — sensory loop, contradiction detection, freshness decay, trust calibration
 - **Sandbox execution** — runs code in isolated environment, captures output, verifies results
