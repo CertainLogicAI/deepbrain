@@ -284,6 +284,7 @@ def main():
     parser = argparse.ArgumentParser(description="DeepBrain 4-condition HumanEval+ eval")
     parser.add_argument("--smoke", type=int, default=0, help="Limit tasks per condition")
     parser.add_argument("--only-d", action="store_true", help="Run only D condition")
+    parser.add_argument("--only-ab", action="store_true", help="Run only A+B (no C/D)")
     args, _ = parser.parse_known_args()
     smoke = args.smoke if args.smoke else 0
 
@@ -327,15 +328,38 @@ def main():
         print(f"Report: {rpt}")
         return
 
-    # A: cold, no memory
+    if args.only_ab:
+        print("  --only-ab: running A+B only (no C/D)")
+        reset()
+        res_a, ma, _ = cond("A_cold", cold, use_mem=False)
+        reset()
+        res_b, mb, _ = cond("B_mem_empty", held, use_mem=True)
+        cc = contam(tasks)
+        print(f"\n  Contamination: {cc['overlap']}/{cc['total']} ({cc['ratio']})")
+        print("\n"+"="*70)
+        print("A+B SUMMARY")
+        hdr = f"{'Condition':<22} {'Tasks':>6} {'Code':>5} {'Sub':>5} {'base@1':>8} {'+@1':>8} {'sub_ba':>7} {'sub_pl':>7}"
+        print(hdr); print("-"*72)
+        for nm, m in [("A_cold", ma), ("B_empty", mb)]:
+            g = m.get("gen", {}); e = m.get("eval", {}) or {}
+            b = e.get("pass@1_base", "?"); p = e.get("pass@1_plus", "?")
+            sb = e.get("subset_base", "?"); sp = e.get("subset_plus", "?")
+            nsub = e.get("n_submitted", m.get("n_submitted", "?"))
+            print(f"{nm:<22} {m['tasks_assigned']:>6} {g.get('code',0):>5} {nsub:>5} {str(b):>8} {str(p):>8} {str(sb):>7} {str(sp):>7}")
+        print("="*70)
+        rpt = os.path.join(OUT_DIR, "full_report_ab.json")
+        with open(rpt, "w") as f:
+            json.dump({"ts": datetime.now(timezone.utc).isoformat(), "model": MODEL,
+                        "conditions": {"A": ma, "B": mb},
+                        "contamination": cc}, f, indent=2)
+        print(f"Report: {rpt}")
+        return
+
+    # Full run: A, B, C, D
     reset()
     res_a, ma, _ = cond("A_cold", cold, use_mem=False)
-
-    # B: memory on, empty chain
     reset()
     res_b, mb, _ = cond("B_mem_empty", held, use_mem=True)
-
-    # C: exploratory — sibling-then-memory
     reset()
     seeds = {}
     for tid, td in held:
@@ -346,20 +370,14 @@ def main():
             seeds[tid] = c
     print(f"\n  Siblings generated: {len(seeds)}/{len(held)}")
     res_c, mc, _ = cond("C_mem_sibling", held, use_mem=True, seed_codes=seeds)
-
-    # D: test-then-seal-then-replay on ALL cold tasks
     reset()
     res_d, md, _ = cond_d("D_replay", cold)
-
-    # Contamination over ALL 164 tasks
     cc = contam(tasks)
     print(f"\n  Contamination: {cc['overlap']}/{cc['total']} ({cc['ratio']})")
-
     print("\n"+"="*70)
     print("SUMMARY")
     hdr = f"{'Condition':<22} {'Tasks':>6} {'Code':>5} {'Sub':>5} {'base@1':>8} {'+@1':>8} {'sub_ba':>7} {'sub_pl':>7}"
-    print(hdr)
-    print("-"*72)
+    print(hdr); print("-"*72)
     for nm, m in [("A_cold", ma), ("B_empty", mb), ("C_sibling", mc), ("D_replay", md)]:
         g = m.get("gen", {}); e = m.get("eval", {}) or {}
         b = e.get("pass@1_base", "?"); p = e.get("pass@1_plus", "?")
