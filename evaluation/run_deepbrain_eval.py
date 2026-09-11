@@ -195,7 +195,17 @@ def cond_d(label, tasks):
                 f.write(json.dumps({"task_id": t2, "solution": code if t2 == tid else ""}) + "\n")
         try:
             sc = score_solutions(tmp, f"_dt_{tid.replace('/','_')}")
-            passed = sc and sc.get("pass@1_plus") == 1.0
+            # Check per-task result from eval_results.json, not aggregate pass@1
+            eval_res_path = tmp.replace(".jsonl", "_eval_results.json")
+            passed = False
+            if os.path.exists(eval_res_path):
+                with open(eval_res_path) as ef:
+                    er = json.load(ef)
+                for v in er.get("eval",{}).values():
+                    if isinstance(v, list) and len(v) > 0:
+                        if v[0].get("plus_status") == "pass":
+                            passed = True
+                            break
         except Exception:
             passed = False
         if passed:
