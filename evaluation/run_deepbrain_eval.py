@@ -85,11 +85,17 @@ def score_solutions(sol_path, label):
             parts = line.strip().split()
             try:
                 val = float(parts[-1])
-                if "human" not in line.lower() or "human+" not in line.lower():
-                    if base is None: base = val
-                if "human+" in line.lower():
+                if "human+" in line.lower() or "plus" in line.lower():
                     plus = val
-            except: pass
+                elif "human" in line.lower() and "human+" not in line.lower():
+                    base = val
+                elif "base" in line.lower():
+                    base = val
+                elif base is None and plus is None:
+                    # First pass@1 line is usually base
+                    base = val
+            except:
+                pass
 
     return {"pass@1_base": base, "pass@1_plus": plus, "stdout": stdout}
 
