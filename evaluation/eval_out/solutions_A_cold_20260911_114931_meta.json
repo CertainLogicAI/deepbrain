@@ -1,0 +1,20 @@
+{
+  "condition": "A_cold",
+  "mem": false,
+  "model": "deepseek/deepseek-v4-flash",
+  "temp": 0.2,
+  "ts": "20260911_114931",
+  "tasks": 131,
+  "file": "/tmp/heval_run/evaluation/eval_out/solutions_A_cold_20260911_114931.jsonl",
+  "gen": {
+    "code": 115,
+    "empty": 16,
+    "hits": 0,
+    "replays": 0
+  },
+  "eval": {
+    "pass@1_base": 0.659,
+    "pass@1_plus": null,
+    "stdout": "Load from ground-truth from /data/.cache/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl\nReading samples...\nhumaneval (base tests)\npass@1:\t0.659\nhumaneval+ (base + extra tests)\npass@1:\t0.640\n"
+  }
+}

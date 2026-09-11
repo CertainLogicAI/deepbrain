@@ -1,0 +1,19 @@
+{
+  "condition": "D_replay",
+  "mem": true,
+  "model": "deepseek/deepseek-v4-flash",
+  "temp": 0.2,
+  "ts": "20260911_115816",
+  "tasks": 0,
+  "file": "/tmp/heval_run/evaluation/eval_out/solutions_D_replay_20260911_115816.jsonl",
+  "sealed": {
+    "pass": 0,
+    "fail": 0
+  },
+  "gen": {
+    "code": 0,
+    "empty": 0,
+    "replays": 0
+  },
+  "eval": null
+}

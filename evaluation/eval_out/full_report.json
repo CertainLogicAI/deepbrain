@@ -1,0 +1,91 @@
+{
+  "ts": "2026-09-11T11:58:16.037080+00:00",
+  "model": "deepseek/deepseek-v4-flash",
+  "conditions": {
+    "A": {
+      "condition": "A_cold",
+      "mem": false,
+      "model": "deepseek/deepseek-v4-flash",
+      "temp": 0.2,
+      "ts": "20260911_114931",
+      "tasks": 131,
+      "file": "/tmp/heval_run/evaluation/eval_out/solutions_A_cold_20260911_114931.jsonl",
+      "gen": {
+        "code": 115,
+        "empty": 16,
+        "hits": 0,
+        "replays": 0
+      },
+      "eval": {
+        "pass@1_base": 0.659,
+        "pass@1_plus": null,
+        "stdout": "Load from ground-truth from /data/.cache/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl\nReading samples...\nhumaneval (base tests)\npass@1:\t0.659\nhumaneval+ (base + extra tests)\npass@1:\t0.640\n"
+      }
+    },
+    "B": {
+      "condition": "B_mem_empty",
+      "mem": true,
+      "model": "deepseek/deepseek-v4-flash",
+      "temp": 0.2,
+      "ts": "20260911_115041",
+      "tasks": 33,
+      "file": "/tmp/heval_run/evaluation/eval_out/solutions_B_mem_empty_20260911_115041.jsonl",
+      "gen": {
+        "code": 31,
+        "empty": 2,
+        "hits": 0,
+        "replays": 0
+      },
+      "eval": {
+        "pass@1_base": 0.165,
+        "pass@1_plus": null,
+        "stdout": "Load from ground-truth from /data/.cache/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl\nReading samples...\nhumaneval (base tests)\npass@1:\t0.165\nhumaneval+ (base + extra tests)\npass@1:\t0.152\n"
+      }
+    },
+    "C": {
+      "condition": "C_mem_sibling",
+      "mem": true,
+      "model": "deepseek/deepseek-v4-flash",
+      "temp": 0.2,
+      "ts": "20260911_115801",
+      "tasks": 33,
+      "file": "/tmp/heval_run/evaluation/eval_out/solutions_C_mem_sibling_20260911_115801.jsonl",
+      "gen": {
+        "code": 29,
+        "empty": 4,
+        "hits": 21,
+        "replays": 21
+      },
+      "eval": {
+        "pass@1_base": 0.067,
+        "pass@1_plus": null,
+        "stdout": "Load from ground-truth from /data/.cache/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl\nReading samples...\nhumaneval (base tests)\npass@1:\t0.067\nhumaneval+ (base + extra tests)\npass@1:\t0.067\n"
+      }
+    },
+    "D": {
+      "condition": "D_replay",
+      "mem": true,
+      "model": "deepseek/deepseek-v4-flash",
+      "temp": 0.2,
+      "ts": "20260911_115816",
+      "tasks": 0,
+      "file": "/tmp/heval_run/evaluation/eval_out/solutions_D_replay_20260911_115816.jsonl",
+      "sealed": {
+        "pass": 0,
+        "fail": 0
+      },
+      "gen": {
+        "code": 0,
+        "empty": 0,
+        "replays": 0
+      },
+      "eval": null
+    }
+  },
+  "contamination": {
+    "overlap": 0,
+    "tasks": [],
+    "total": 0,
+    "ratio": 0
+  }
+}

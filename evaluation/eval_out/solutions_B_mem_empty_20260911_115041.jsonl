@@ -1,0 +1,164 @@
+{"task_id": "HumanEval/0", "solution": ""}
+{"task_id": "HumanEval/1", "solution": "from typing import List\n\ndef separate_paren_groups(paren_string: str) -> List[str]:\n    \"\"\"\n    Separate a string containing multiple groups of nested parentheses into\n    individual balanced groups, ignoring any spaces.\n\n    Args:\n        paren_string: Input string with parentheses groups and possibly spaces.\n\n    Returns:\n        List of strings, each representing a balanced group of parentheses.\n    \"\"\"\n    result = []\n    current_group = []   # list of characters for the current group\n    balance = 0\n\n    for ch in paren_string:\n        if ch == ' ':\n            continue\n        if ch == '(':\n            balance += 1\n            current_group.append(ch)\n        elif ch == ')':\n            balance -= 1\n            current_group.append(ch)"}
+{"task_id": "HumanEval/2", "solution": ""}
+{"task_id": "HumanEval/3", "solution": ""}
+{"task_id": "HumanEval/4", "solution": ""}
+{"task_id": "HumanEval/5", "solution": ""}
+{"task_id": "HumanEval/6", "solution": "from typing import List\n\ndef parse_nested_parens(paren_string: str) -> List[int]:\n    \"\"\"\n    Parses a string of multiple groups of nested parentheses separated by spaces.\n    Returns a list of the maximum nesting depth for each group.\n    \"\"\"\n    groups = paren_string.split()\n    result = []\n    for group in groups:\n        max_depth = 0\n        current_depth = 0\n        for ch in group:\n            if ch == '(':\n                current_depth += 1\n                if current_depth > max_depth:\n                    max_depth = current_depth\n            elif ch == ')':\n                current_depth -= 1\n                # It is assumed that parentheses are balanced, so no negative depth.\n        result.append(max_depth)\n    return result"}
+{"task_id": "HumanEval/7", "solution": "from typing import List\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Filter an input list of strings only for ones that contain given substring\n    >>> filter_by_substring([], 'a')\n    []\n    >>> filter_by_substring(['abc', 'bacd', 'cde', 'array'], 'a')\n    ['abc', 'bacd', 'array']\n    \"\"\"\n    return [s for s in strings if substring in s]"}
+{"task_id": "HumanEval/8", "solution": "from typing import List, Tuple\n\ndef sum_product(numbers: List[int]) -> Tuple[int, int]:\n    \"\"\" For a given list of integers, return a tuple consisting of a sum and a product of all the integers in a list.\n    Empty sum should be equal to 0 and empty product should be equal to 1.\n    >>> sum_product([])\n    (0, 1)\n    >>> sum_product([1, 2, 3, 4])\n    (10, 24)\n    \"\"\"\n    if not numbers:\n        return (0, 1)\n    \n    total_sum = 0\n    total_product = 1\n    for num in numbers:\n        total_sum += num\n        total_product *= num\n    return (total_sum, total_product)"}
+{"task_id": "HumanEval/9", "solution": ""}
+{"task_id": "HumanEval/10", "solution": ""}
+{"task_id": "HumanEval/11", "solution": ""}
+{"task_id": "HumanEval/12", "solution": ""}
+{"task_id": "HumanEval/13", "solution": ""}
+{"task_id": "HumanEval/14", "solution": ""}
+{"task_id": "HumanEval/15", "solution": ""}
+{"task_id": "HumanEval/16", "solution": ""}
+{"task_id": "HumanEval/17", "solution": ""}
+{"task_id": "HumanEval/18", "solution": ""}
+{"task_id": "HumanEval/19", "solution": ""}
+{"task_id": "HumanEval/20", "solution": ""}
+{"task_id": "HumanEval/21", "solution": ""}
+{"task_id": "HumanEval/22", "solution": "from typing import List, Any\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values only for integers\n    >>> filter_integers(['a', 3.14, 5])\n    [5]\n    >>> filter_integers([1, 2, 3, 'abc', {}, []])\n    [1, 2, 3]\n    \"\"\"\n    return [x for x in values if isinstance(x, int)]"}
+{"task_id": "HumanEval/23", "solution": "The function `strlen` takes a string as input and returns its length using Python's built-in `len()` function. It includes a docstring with example usage. The implementation is correct and concise."}
+{"task_id": "HumanEval/24", "solution": ""}
+{"task_id": "HumanEval/25", "solution": ""}
+{"task_id": "HumanEval/26", "solution": "from typing import List\nfrom collections import Counter\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\"\n    From a list of integers, remove all elements that occur more than once.\n    Keep order of elements left the same as in the input.\n    \"\"\"\n    # Count occurrences of each number\n    counts = Counter(numbers)\n    # Keep only numbers that appear exactly once, preserving order\n    return [num for num in numbers if counts[num] == 1]"}
+{"task_id": "HumanEval/27", "solution": ""}
+{"task_id": "HumanEval/28", "solution": "from typing import List\n\ndef concatenate(strings: List[str]) -> str:\n    \"\"\" Concatenate list of strings into a single string\n    >>> concatenate([])\n    ''\n    >>> concatenate(['a', 'b', 'c'])\n    'abc'\n    \"\"\"\n    return ''.join(strings)"}
+{"task_id": "HumanEval/29", "solution": ""}
+{"task_id": "HumanEval/30", "solution": ""}
+{"task_id": "HumanEval/31", "solution": ""}
+{"task_id": "HumanEval/32", "solution": ""}
+{"task_id": "HumanEval/33", "solution": ""}
+{"task_id": "HumanEval/34", "solution": ""}
+{"task_id": "HumanEval/35", "solution": "def max_element(l: list):\n    \"\"\"Return maximum element in the list.\n    >>> max_element([1, 2, 3])\n    3\n    >>> max_element([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])\n    123\n    \"\"\"\n    # Using built-in max function for clarity and efficiency\n    return max(l)"}
+{"task_id": "HumanEval/36", "solution": ""}
+{"task_id": "HumanEval/37", "solution": ""}
+{"task_id": "HumanEval/38", "solution": ""}
+{"task_id": "HumanEval/39", "solution": "def prime_fib(n: int):\n    \"\"\"\n    Returns the n-th number that is both a Fibonacci number and prime.\n\n    Examples:\n    >>> prime_fib(1)\n    2\n    >>> prime_fib(2)\n    3\n    >>> prime_fib(3)\n    5\n    >>> prime_fib(4)\n    13\n    >>> prime_fib(5)\n    89\n    \"\"\"\n    def is_prime(num: int) -> bool:\n        if num < 2:\n            return False\n        if num % 2 == 0:\n            return num == 2\n        # check odd divisors up to sqrt(num)\n        i = 3\n        while i * i <= num:\n            if num % i == 0:\n                return False\n            i += 2\n        return True\n\n    # Fibonacci numbers: F1=1, F2=1, F3=2, F4=3, F5=5, ...\n    # We start with F2=1 and F3=2, but 1 is not prime.\n    a, b = 1, 2   # a = F2, b = F3\n    count = 0\n    # Check b (2) first\n    if is_prime(b):\n        count = 1\n        if count == n:\n            return b\n\n    while count < n:\n        # generate next Fibonacci number\n        a, b = b, a + b\n        if is_prime(b):\n            count += 1\n            if count == n:\n                return b\n\n    # Should never reach here for valid n\n    return None"}
+{"task_id": "HumanEval/40", "solution": "def triples_sum_to_zero(l: list):\n    \"\"\"\n    triples_sum_to_zero takes a list of integers as an input.\n    it returns True if there are three distinct elements in the list that\n    sum to zero, and False otherwise.\n\n    >>> triples_sum_to_zero([1, 3, 5, 0])\n    False\n    >>> triples_sum_to_zero([1, 3, -2, 1])\n    True\n    >>> triples_sum_to_zero([1, 2, 3, 7])\n    False\n    >>> triples_sum_to_zero([2, 4, -5, 3, 9, 7])\n    True\n    >>> triples_sum_to_zero([1])\n    False\n    \"\"\"\n    n = len(l)\n    # Need at least three elements\n    if n < 3:\n        return False\n\n    # Check all distinct triples (i, j, k) with i < j < k\n    for i in range(n - 2):\n        for j in range(i + 1, n - 1):\n            for k in range(j + 1, n):\n                if l[i] + l[j] + l[k] == 0:\n                    return True\n    return False"}
+{"task_id": "HumanEval/41", "solution": ""}
+{"task_id": "HumanEval/42", "solution": ""}
+{"task_id": "HumanEval/43", "solution": ""}
+{"task_id": "HumanEval/44", "solution": ""}
+{"task_id": "HumanEval/45", "solution": ""}
+{"task_id": "HumanEval/46", "solution": ""}
+{"task_id": "HumanEval/47", "solution": ""}
+{"task_id": "HumanEval/48", "solution": ""}
+{"task_id": "HumanEval/49", "solution": ""}
+{"task_id": "HumanEval/50", "solution": "def decode_shift(s: str):\n    \"\"\"\n    takes as input string encoded with encode_shift function. Returns decoded string.\n    \"\"\"\n    return \"\".join([chr(((ord(ch) - 5 - ord(\"a\")) % 26) + ord(\"a\")) for ch in s])"}
+{"task_id": "HumanEval/51", "solution": ""}
+{"task_id": "HumanEval/52", "solution": ""}
+{"task_id": "HumanEval/53", "solution": ""}
+{"task_id": "HumanEval/54", "solution": ""}
+{"task_id": "HumanEval/55", "solution": "def fib(n: int):\n    \"\"\"Return n-th Fibonacci number.\n    >>> fib(10)\n    55\n    >>> fib(1)\n    1\n    >>> fib(8)\n    21\n    \"\"\"\n    if n <= 0:\n        return 0\n    a, b = 0, 1\n    for _ in range(1, n):\n        a, b = b, a + b\n    return b"}
+{"task_id": "HumanEval/56", "solution": "def correct_bracketing(brackets: str) -> bool:\n    \"\"\"\n    Returns True if every opening bracket '<' has a corresponding closing bracket '>'\n    in the given string, and the brackets are properly nested.\n\n    Args:\n        brackets: A string consisting only of '<' and '>' characters.\n\n    Returns:\n        True if the brackets are balanced, False otherwise.\n    \"\"\"\n    balance = 0\n    for ch in brackets:\n        if ch == '<':\n            balance += 1\n        elif ch == '>':\n            balance -= 1\n        # If at any point we have more closing than opening, it's invalid.\n        if balance < 0:\n            return False\n    # After processing all characters, balance must be zero.\n    return balance == 0"}
+{"task_id": "HumanEval/57", "solution": "def monotonic(l: list):\n    \"\"\"Return True if list elements are monotonically increasing or decreasing.\n    >>> monotonic([1, 2, 4, 20])\n    True\n    >>> monotonic([1, 20, 4, 10])\n    False\n    >>> monotonic([4, 1, 0, -10])\n    True\n    \"\"\"\n    # Empty or single-element lists are trivially monotonic\n    if len(l) <= 1:\n        return True\n\n    # Check if the list is non-decreasing (monotonically increasing)\n    increasing = all(l[i] <= l[i+1] for i in range(len(l)-1))\n    # Check if the list is non-increasing (monotonically decreasing)\n    decreasing = all(l[i] >= l[i+1] for i in range(len(l)-1))\n\n    return increasing or decreasing"}
+{"task_id": "HumanEval/58", "solution": ""}
+{"task_id": "HumanEval/59", "solution": "def largest_prime_factor(n: int) -> int:\n    \"\"\"Return the largest prime factor of n. Assume n > 1 and is not a prime.\"\"\"\n    # Remove all factors of 2\n    while n % 2 == 0:\n        n //= 2\n    # If after removing 2s, n becomes 1, the largest prime factor was 2\n    if n == 1:\n        return 2\n\n    # Check odd factors from 3 upwards\n    factor = 3\n    while factor * factor <= n:\n        while n % factor == 0:\n            n //= factor\n        factor += 2\n\n    # If n is still greater than 1, it is the largest prime factor\n    return n if n > 1 else 2"}
+{"task_id": "HumanEval/60", "solution": ""}
+{"task_id": "HumanEval/61", "solution": ""}
+{"task_id": "HumanEval/62", "solution": "def derivative(xs: list):\n    \"\"\"\n    Compute the derivative of a polynomial given by its coefficients.\n\n    The polynomial is represented as:\n        xs[0] + xs[1]*x + xs[2]*x^2 + ... + xs[n-1]*x^(n-1)\n    The derivative is:\n        xs[1] + 2*xs[2]*x + 3*xs[3]*x^2 + ... + (n-1)*xs[n-1]*x^(n-2)\n\n    Args:\n        xs (list): Coefficients of the polynomial, starting from the constant term.\n\n    Returns:\n        list: Coefficients of the derivative polynomial, in the same form.\n               If the input has length 0 or 1, returns an empty list.\n    \"\"\"\n    # If there are fewer than 2 coefficients, derivative is zero polynomial -> empty list\n    if len(xs) <= 1:\n        return []\n    \n    # For each index i (starting from 1), multiply xs[i] by i (the exponent)\n    # The result list will have length len(xs)-1\n    return [i * xs[i] for i in range(1, len(xs))]"}
+{"task_id": "HumanEval/63", "solution": ""}
+{"task_id": "HumanEval/64", "solution": ""}
+{"task_id": "HumanEval/65", "solution": ""}
+{"task_id": "HumanEval/66", "solution": ""}
+{"task_id": "HumanEval/67", "solution": ""}
+{"task_id": "HumanEval/68", "solution": ""}
+{"task_id": "HumanEval/69", "solution": ""}
+{"task_id": "HumanEval/70", "solution": ""}
+{"task_id": "HumanEval/71", "solution": "import math\n\ndef triangle_area(a, b, c):\n    \"\"\"\n    Given the lengths of the three sides of a triangle. Return the area of\n    the triangle rounded to 2 decimal points if the three sides form a valid triangle. \n    Otherwise return -1.\n    \"\"\"\n    # Check for non-positive sides (optional but good practice)\n    if a <= 0 or b <= 0 or c <= 0:\n        return -1\n\n    # Triangle inequality: sum of any two sides must be greater than the third\n    if a + b > c and a + c > b and b + c > a:\n        # Heron's formula\n        s = (a + b + c) / 2\n        area = math.sqrt(s * (s - a) * (s - b) * (s - c))\n        # Round to two decimal places\n        return round(area, 2)\n    else:\n        return -1"}
+{"task_id": "HumanEval/72", "solution": ""}
+{"task_id": "HumanEval/73", "solution": ""}
+{"task_id": "HumanEval/74", "solution": ""}
+{"task_id": "HumanEval/75", "solution": ""}
+{"task_id": "HumanEval/76", "solution": ""}
+{"task_id": "HumanEval/77", "solution": ""}
+{"task_id": "HumanEval/78", "solution": ""}
+{"task_id": "HumanEval/79", "solution": ""}
+{"task_id": "HumanEval/80", "solution": ""}
+{"task_id": "HumanEval/81", "solution": ""}
+{"task_id": "HumanEval/82", "solution": ""}
+{"task_id": "HumanEval/83", "solution": ""}
+{"task_id": "HumanEval/84", "solution": ""}
+{"task_id": "HumanEval/85", "solution": ""}
+{"task_id": "HumanEval/86", "solution": ""}
+{"task_id": "HumanEval/87", "solution": "def get_row(lst, x):\n    result = []\n    for row_idx, row in enumerate(lst):\n        for col_idx, val in enumerate(row):\n            if val == x:\n                result.append((row_idx, col_idx))\n    \n    # Sort by row ascending, then by column descending\n    result.sort(key=lambda coord: (coord[0], -coord[1]))\n    return result"}
+{"task_id": "HumanEval/88", "solution": ""}
+{"task_id": "HumanEval/89", "solution": ""}
+{"task_id": "HumanEval/90", "solution": ""}
+{"task_id": "HumanEval/91", "solution": ""}
+{"task_id": "HumanEval/92", "solution": ""}
+{"task_id": "HumanEval/93", "solution": ""}
+{"task_id": "HumanEval/94", "solution": ""}
+{"task_id": "HumanEval/95", "solution": ""}
+{"task_id": "HumanEval/96", "solution": ""}
+{"task_id": "HumanEval/97", "solution": ""}
+{"task_id": "HumanEval/98", "solution": ""}
+{"task_id": "HumanEval/99", "solution": ""}
+{"task_id": "HumanEval/100", "solution": ""}
+{"task_id": "HumanEval/101", "solution": ""}
+{"task_id": "HumanEval/102", "solution": ""}
+{"task_id": "HumanEval/103", "solution": ""}
+{"task_id": "HumanEval/104", "solution": ""}
+{"task_id": "HumanEval/105", "solution": ""}
+{"task_id": "HumanEval/106", "solution": ""}
+{"task_id": "HumanEval/107", "solution": "def even_odd_palindrome(n: int) -> tuple:\n    \"\"\"\n    Given a positive integer n, return a tuple (even_count, odd_count)\n    where even_count is the number of integer palindromes in [1, n]\n    that are even, and odd_count is the number that are odd.\n    \"\"\"\n    def is_palindrome(x: int) -> bool:\n        s = str(x)\n        return s == s[::-1]\n\n    even = 0\n    odd = 0\n    for i in range(1, n + 1):\n        if is_palindrome(i):\n            if i % 2 == 0:\n                even += 1\n            else:\n                odd += 1\n    return (even, odd)"}
+{"task_id": "HumanEval/108", "solution": "def count_nums(arr):\n    \"\"\"\n    Returns the number of elements in the array whose sum of signed digits is greater than 0.\n    For negative numbers, the most significant digit is treated as negative.\n    \"\"\"\n    count = 0\n    for num in arr:\n        if num < 0:\n            # Convert to string without the minus sign\n            s = str(num)[1:]\n            digits = [int(ch) for ch in s]\n            # First digit negative, rest positive\n            digit_sum = -digits[0] + sum(digits[1:])\n        else:\n            # Positive or zero: sum of digits (0 for zero)\n            digit_sum = sum(int(ch) for ch in str(num))\n        if digit_sum > 0:\n            count += 1\n    return count"}
+{"task_id": "HumanEval/109", "solution": ""}
+{"task_id": "HumanEval/110", "solution": ""}
+{"task_id": "HumanEval/111", "solution": ""}
+{"task_id": "HumanEval/112", "solution": ""}
+{"task_id": "HumanEval/113", "solution": ""}
+{"task_id": "HumanEval/114", "solution": "def minSubArraySum(nums):\n    \"\"\"\n    Given an array of integers nums, find the minimum sum of any non-empty sub-array\n    of nums.\n    \n    Example:\n    minSubArraySum([2, 3, 4, 1, 2, 4]) == 1\n    minSubArraySum([-1, -2, -3]) == -6\n    \"\"\"\n    if not nums:\n        return 0  # or raise ValueError, but problem assumes non-empty\n    \n    min_ending_here = nums[0]\n    min_so_far = nums[0]\n    \n    for i in range(1, len(nums)):\n        # Either start a new subarray at nums[i] or extend the previous one\n        min_ending_here = min(nums[i], min_ending_here + nums[i])\n        # Update the overall minimum\n        min_so_far = min(min_so_far, min_ending_here)\n    \n    return min_so_far"}
+{"task_id": "HumanEval/115", "solution": ""}
+{"task_id": "HumanEval/116", "solution": ""}
+{"task_id": "HumanEval/117", "solution": ""}
+{"task_id": "HumanEval/118", "solution": ""}
+{"task_id": "HumanEval/119", "solution": ""}
+{"task_id": "HumanEval/120", "solution": ""}
+{"task_id": "HumanEval/121", "solution": ""}
+{"task_id": "HumanEval/122", "solution": ""}
+{"task_id": "HumanEval/123", "solution": ""}
+{"task_id": "HumanEval/124", "solution": ""}
+{"task_id": "HumanEval/125", "solution": ""}
+{"task_id": "HumanEval/126", "solution": ""}
+{"task_id": "HumanEval/127", "solution": ""}
+{"task_id": "HumanEval/128", "solution": ""}
+{"task_id": "HumanEval/129", "solution": ""}
+{"task_id": "HumanEval/130", "solution": ""}
+{"task_id": "HumanEval/131", "solution": ""}
+{"task_id": "HumanEval/132", "solution": ""}
+{"task_id": "HumanEval/133", "solution": ""}
+{"task_id": "HumanEval/134", "solution": ""}
+{"task_id": "HumanEval/135", "solution": ""}
+{"task_id": "HumanEval/136", "solution": ""}
+{"task_id": "HumanEval/137", "solution": ""}
+{"task_id": "HumanEval/138", "solution": "def is_equal_to_sum_even(n):\n    \"\"\"\n    Returns True if n can be expressed as the sum of exactly four positive even numbers.\n    This is possible if and only if n is even and n >= 8.\n    \"\"\"\n    return n >= 8 and n % 2 == 0"}
+{"task_id": "HumanEval/139", "solution": "def special_factorial(n: int) -> int:\n    \"\"\"The Brazilian factorial is defined as:\n    brazilian_factorial(n) = n! * (n-1)! * (n-2)! * ... * 1!\n    where n > 0\n\n    For example:\n    >>> special_factorial(4)\n    288\n\n    The function will receive an integer as input and should return the special\n    factorial of this integer.\n    \"\"\"\n    if n <= 0:\n        raise ValueError(\"n must be a positive integer\")\n    result = 1\n    current_fact = 1\n    for i in range(1, n + 1):\n        current_fact *= i   # i!\n        result *= current_fact\n    return result"}
+{"task_id": "HumanEval/140", "solution": ""}
+{"task_id": "HumanEval/141", "solution": ""}
+{"task_id": "HumanEval/142", "solution": ""}
+{"task_id": "HumanEval/143", "solution": "def words_in_sentence(sentence):\n    \"\"\"\n    Returns a string containing words from the input sentence whose lengths are prime numbers,\n    preserving the original order.\n    \"\"\"\n    def is_prime(n):\n        \"\"\"Check if a non-negative integer is prime.\"\"\"\n        if n < 2:\n            return False\n        for i in range(2, int(n**0.5) + 1):\n            if n % i == 0:\n                return False\n        return True\n\n    # Split the sentence into words (assuming single spaces)\n    words = sentence.split()\n    # Filter words whose length is prime\n    prime_words = [word for word in words if is_prime(len(word))]\n    # Join them back with spaces\n    return \" \".join(prime_words)"}
+{"task_id": "HumanEval/144", "solution": ""}
+{"task_id": "HumanEval/145", "solution": ""}
+{"task_id": "HumanEval/146", "solution": ""}
+{"task_id": "HumanEval/147", "solution": ""}
+{"task_id": "HumanEval/148", "solution": "def bf(planet1, planet2):\n    '''\n    Returns a tuple of all planets whose orbits lie between the orbits of\n    planet1 and planet2, sorted by proximity to the Sun.\n    Returns an empty tuple if either planet name is invalid.\n    '''\n    planets = [\"Mercury\", \"Venus\", \"Earth\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\"]\n    \n    # Validate planet names\n    if planet1 not in planets or planet2 not in planets:\n        return ()\n    \n    # Get indices and determine the range\n    i1 = planets.index(planet1)\n    i2 = planets.index(planet2)\n    start = min(i1, i2)\n    end = max(i1, i2)\n    \n    # Return planets strictly between start and end (exclusive)\n    return tuple(planets[start+1:end])"}
+{"task_id": "HumanEval/149", "solution": ""}
+{"task_id": "HumanEval/150", "solution": ""}
+{"task_id": "HumanEval/151", "solution": "def double_the_difference(lst):\n    \"\"\"\n    Return the sum of squares of odd integers in the list, ignoring negative numbers and non-integers.\n    \"\"\"\n    total = 0\n    for x in lst:\n        # Check if x is an integer (not a float or other type) and non-negative and odd\n        if isinstance(x, int) and x >= 0 and x % 2 == 1:\n            total += x * x\n    return total"}
+{"task_id": "HumanEval/152", "solution": "def compare(game, guess):\n    \"\"\"\n    Returns a list of absolute differences between the actual scores and the guesses.\n    \n    Parameters:\n    game (list of int): The actual scores for each match.\n    guess (list of int): The guessed scores for each match.\n    \n    Returns:\n    list of int: Absolute differences, 0 if guess is correct.\n    \"\"\"\n    return [abs(g - s) for s, g in zip(game, guess)]"}
+{"task_id": "HumanEval/153", "solution": ""}
+{"task_id": "HumanEval/154", "solution": ""}
+{"task_id": "HumanEval/155", "solution": "def even_odd_count(num):\n    \"\"\"\n    Given an integer, return a tuple that has the number of even and odd digits respectively.\n\n    Example:\n        even_odd_count(-12) ==> (1, 1)\n        even_odd_count(123) ==> (1, 2)\n    \"\"\"\n    # Convert to string and remove the negative sign if present\n    num_str = str(abs(num))\n    even_count = 0\n    odd_count = 0\n    \n    for char in num_str:\n        digit = int(char)\n        if digit % 2 == 0:\n            even_count += 1\n        else:\n            odd_count += 1\n    \n    return (even_count, odd_count)"}
+{"task_id": "HumanEval/156", "solution": ""}
+{"task_id": "HumanEval/157", "solution": ""}
+{"task_id": "HumanEval/158", "solution": ""}
+{"task_id": "HumanEval/159", "solution": ""}
+{"task_id": "HumanEval/160", "solution": ""}
+{"task_id": "HumanEval/161", "solution": "def solve(s: str) -> str:\n    \"\"\"\n    For each character in s:\n    - If it's a letter, reverse its case.\n    - Otherwise, keep it unchanged.\n    If the string contains no letters at all, reverse the entire string.\n    \"\"\"\n    # Check if there is at least one letter\n    if not any(ch.isalpha() for ch in s):\n        return s[::-1]          # reverse the whole string\n\n    # Otherwise, swap case of letters only\n    result = []\n    for ch in s:\n        if ch.isalpha():\n            result.append(ch.swapcase())\n        else:\n            result.append(ch)\n    return ''.join(result)"}
+{"task_id": "HumanEval/162", "solution": ""}
+{"task_id": "HumanEval/163", "solution": "def generate_integers(a: int, b: int) -> list:\n    \"\"\"\n    Return a list of all integers between a and b (inclusive) that consist\n    only of even digits (0, 2, 4, 6, 8), sorted in ascending order.\n\n    Examples:\n    >>> generate_integers(2, 8)\n    [2, 4, 6, 8]\n    >>> generate_integers(8, 2)\n    [2, 4, 6, 8]\n    >>> generate_integers(10, 14)\n    []\n    \"\"\"\n    # Determine the inclusive range\n    low = min(a, b)"}
