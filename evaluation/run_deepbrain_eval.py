@@ -273,6 +273,7 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(description="DeepBrain 4-condition HumanEval+ eval")
     parser.add_argument("--smoke", type=int, default=0, help="Limit tasks per condition")
+    parser.add_argument("--only-d", action="store_true", help="Run only D condition")
     args, _ = parser.parse_known_args()
     smoke = args.smoke if args.smoke else 0
 
@@ -299,6 +300,22 @@ def main():
         held = held[:smoke]
 
     print(f"Cold (80%): {len(cold)} | Held-out (20%): {len(held)}")
+
+    if args.only_d:
+        # Reuse existing A eval_out results; run only D
+        print("  --only-d: running D condition from A's cold split...")
+        reset()
+        res_d, md, _ = cond_d("D_replay", cold)
+        cc = contam(tasks)
+        print(f"\n  Contamination: {cc['overlap']}/{cc['total']} ({cc['ratio']})")
+        print("\n"+"="*70)
+        print("D ONLY SUMMARY")
+        rpt = os.path.join(OUT_DIR, "full_report_d_only.json")
+        with open(rpt, "w") as f:
+            json.dump({"ts": datetime.now(timezone.utc).isoformat(), "model": MODEL,
+                        "D": md, "contamination": cc}, f, indent=2)
+        print(f"Report: {rpt}")
+        return
 
     # A: cold, no memory
     reset()
