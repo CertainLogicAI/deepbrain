@@ -1,0 +1,24 @@
+{
+  "condition": "B_mem_empty",
+  "mem": true,
+  "model": "deepseek/deepseek-v4-flash",
+  "temp": 0.2,
+  "ts": "20260911_134212",
+  "tasks_assigned": 33,
+  "n_submitted": 29,
+  "file": "/tmp/heval_ab/evaluation/eval_out/solutions_B_mem_empty_20260911_134212.jsonl",
+  "gen": {
+    "code": 29,
+    "empty": 4,
+    "hits": 0,
+    "replays": 0
+  },
+  "eval": {
+    "pass@1_base": 0.177,
+    "pass@1_plus": 0.165,
+    "stdout": "Load from ground-truth from /data/.cache/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl\nReading samples...\nhumaneval (base tests)\npass@1:\t0.177\nhumaneval+ (base + extra tests)\npass@1:\t0.165\n",
+    "subset_base": 1.001,
+    "subset_plus": 0.933,
+    "n_submitted": 29
+  }
+}
