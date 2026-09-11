@@ -1,0 +1,25 @@
+{
+  "condition": "D_replay",
+  "mem": true,
+  "model": "deepseek/deepseek-v4-flash",
+  "temp": 0.2,
+  "ts": "20260911_130748",
+  "tasks_assigned": 131,
+  "n_submitted": 101,
+  "file": "/tmp/d_only/evaluation/eval_out/solutions_D_replay_20260911_130748.jsonl",
+  "sealed_pass": 101,
+  "sealed_fail": 30,
+  "gen": {
+    "code": 101,
+    "empty": 30,
+    "replays": 101
+  },
+  "eval": {
+    "pass@1_base": 0.616,
+    "pass@1_plus": 0.616,
+    "stdout": "Load from ground-truth from /data/.cache/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl\nReading samples...\nhumaneval (base tests)\npass@1:\t0.616\nhumaneval+ (base + extra tests)\npass@1:\t0.616\n",
+    "subset_base": 1.0,
+    "subset_plus": 1.0,
+    "n_submitted": 101
+  }
+}
