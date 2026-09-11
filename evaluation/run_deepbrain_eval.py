@@ -27,7 +27,6 @@ OUT_DIR = os.path.join(BASE_DIR, "eval_out")
 os.makedirs(OUT_DIR, exist_ok=True)
 sys.path.insert(0, os.path.join(BASE_DIR, "..", "timechain"))
 from lite import init_chain, seal_record, replay, trace, chain_stats, verify_chain
-API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 BASE = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "deepseek/deepseek-v4-flash"
 
@@ -132,11 +131,9 @@ def cond(label, tasks, use_mem=True, seed_codes=None):
     ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     sol = os.path.join(OUT_DIR, f"solutions_{label}_{ts}.jsonl")
     with open(sol,"w") as f:
-        for tid,_ in tasks: f.write(json.dumps({"task_id":tid,"solution":solutions.get(tid,"")})+"\n")
-    score = None
-    if any(solutions.values()):
-        print("\n  Scoring...")
-        score = score_solutions(sol, label)
+        # Write ALL 164 tasks (EvalPlus needs full dataset)
+        for tid,_ in ALL_TASKS:
+            f.write(json.dumps({"task_id":tid,"solution":solutions.get(tid,"")})+"\n")
     mo = {"condition":label,"mem":use_mem,"model":MODEL,"temp":0.2,"ts":ts,"tasks":len(tasks),
           "file":sol,"gen":{"code":sum(1 for c in solutions.values() if c),"empty":sum(1 for c in solutions.values() if not c),
                            "hits":sum(1 for m in metrics if m.get("hit")),"replays":sum(1 for m in metrics if m.get("origin")=="replay")},
@@ -159,7 +156,7 @@ def cond_d(label, tasks):
         # Test single task
         tmp = os.path.join(OUT_DIR,f"_dt_{tid.replace('/','_')}.jsonl")
         with open(tmp,"w") as f:
-            for t2,_ in tasks: f.write(json.dumps({"task_id":t2,"solution":code if t2==tid else ""})+"\n")
+            for t2,_ in ALL_TASKS: f.write(json.dumps({"task_id":t2,"solution":code if t2==tid else ""})+"\n")
         try:
             sc = score_solutions(tmp,f"_dt_{tid.replace('/','_')}")
             passed = sc and sc.get("pass@1_plus")==1.0
@@ -183,13 +180,13 @@ def cond_d(label, tasks):
     ts=datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     sol=os.path.join(OUT_DIR,f"solutions_{label}_{ts}.jsonl")
     with open(sol,"w") as f:
-        for tid,_ in tasks: f.write(json.dumps({"task_id":tid,"solution":solutions.get(tid,"")})+"\n")
+        for tid,_ in ALL_TASKS: f.write(json.dumps({"task_id":tid,"solution":solutions.get(tid,"")})+"\n")
     score=None
     if any(solutions.values()): score=score_solutions(sol,label)
     mo={"condition":label,"mem":True,"model":MODEL,"temp":0.2,"ts":ts,"tasks":len(tasks),
          "file":sol,"sealed":sealed,
          "gen":{"code":sum(1 for c in solutions.values() if c),"empty":sum(1 for c in solutions.values() if not c),
-                "replays":sum(1 for tid in tasks if solutions.get(tid,""))},
+                "replays":sum(1 for tid,__ in tasks if solutions.get(tid,""))},
          "eval":score}
     with open(sol.replace(".jsonl","_meta.json"),"w") as f: json.dump(mo,f,indent=2)
     return solutions, mo, sol
@@ -229,7 +226,7 @@ def main():
         print(f"  Smoke: {smoke} tasks/condition")
     print("="*70)
 
-    tasks = load_tasks(); print(f"Tasks: {len(tasks)}")
+    tasks = load_tasks(); globals()["ALL_TASKS"] = list(tasks); print(f"Tasks: {len(tasks)}")
     random.seed(42); shuffled = list(tasks); random.shuffle(shuffled)
     sp = int(len(shuffled)*0.8)
     cold = shuffled[:sp]; held = shuffled[sp:]
