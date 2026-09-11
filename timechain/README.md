@@ -68,9 +68,12 @@ violations = verify_chain()  # empty = valid
 stats = chain_stats()  # total, sealed, failures, refusals, chain_length
 ```
 
-## Design Notes
+## Known Limitations (v0)
 
-- **2000 char prompt truncation**: storage efficiency. The signature covers the full original.
+- **Signature algorithm**: uses `hashlib.sha3_256` which is SHA3-256 (FIPS 202), not the original Keccak-256 used in Ethereum. For pure Keccak, swap in `pycryptodome`'s `keccak_256`.
+- **Retrieval**: linear scan of the JSONL file on every query. Fine for small chains (<10K records). For production scale, use the ring-store in the commercial timechain.
+- **Duplicate signatures**: `retrieve_by_signature` returns the first sealed record with a matching signature. If the same prompt was sealed multiple times, only the first is returned.
+- **Truncation**: prompts are truncated at 2000 characters, code at 5000 characters for storage efficiency. The signature is derived from the full prompt *before* truncation.
 - **No deletes**: sealing is permanent. If a record is wrong, seal a correction (it gets a new hash).
 - **No external API**: everything works offline from a repo clone.
 

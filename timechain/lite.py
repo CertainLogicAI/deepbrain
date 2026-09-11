@@ -26,7 +26,14 @@ def sha256(data: str) -> str:
     return hashlib.sha256(data.encode("utf-8")).hexdigest()
 
 def keccak256(data: str) -> str:
-    """Simple deterministic signature using SHA3-256 (Keccak)."""
+    """Deterministic signature.
+
+    NOTE: Uses hashlib.sha3_256, which is SHA3-256, NOT Keccak-256.
+    Python's hashlib implements the final SHA3 standard (FIPS 202),
+    which differs from the original Keccak padding used in Ethereum.
+    For a pure Keccak-256 implementation, use `pycryptodome`'s
+    `Crypto.Hash.keccak_256`. Documented limitation.
+    """
     import hashlib as _hl
     return _hl.sha3_256(data.encode("utf-8")).hexdigest()
 
