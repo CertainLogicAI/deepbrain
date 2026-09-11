@@ -27,8 +27,12 @@ OUT_DIR = os.path.join(BASE_DIR, "eval_out")
 os.makedirs(OUT_DIR, exist_ok=True)
 sys.path.insert(0, os.path.join(BASE_DIR, "..", "timechain"))
 from lite import init_chain, seal_record, replay, trace, chain_stats, verify_chain
+API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 BASE = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "deepseek/deepseek-v4-flash"
+
+# Full task set (needed by EvalPlus — writes all 164 even for smoke)
+ALL_TASKS = []
 
 def load_tasks():
     from evalplus.data import get_human_eval_plus
