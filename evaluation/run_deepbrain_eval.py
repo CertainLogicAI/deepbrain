@@ -138,6 +138,10 @@ def cond(label, tasks, use_mem=True, seed_codes=None):
         # Write ALL 164 tasks (EvalPlus needs full dataset)
         for tid,_ in ALL_TASKS:
             f.write(json.dumps({"task_id":tid,"solution":solutions.get(tid,"")})+"\n")
+    score = None
+    if any(solutions.values()):
+        print("\n  Scoring...")
+        score = score_solutions(sol, label)
     mo = {"condition":label,"mem":use_mem,"model":MODEL,"temp":0.2,"ts":ts,"tasks":len(tasks),
           "file":sol,"gen":{"code":sum(1 for c in solutions.values() if c),"empty":sum(1 for c in solutions.values() if not c),
                            "hits":sum(1 for m in metrics if m.get("hit")),"replays":sum(1 for m in metrics if m.get("origin")=="replay")},
