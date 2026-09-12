@@ -1,0 +1,26 @@
+{
+  "sample_id": "ds-001",
+  "record_type": "knowledge_fact",
+  "content_type": "knowledge",
+  "delivered_at": "2026-09-11T17:54:56-0400",
+  "record": {
+    "query": "Qwen 3.6-35B-A3B fits single H100 with bf16 LoRA",
+    "answer": "The Qwen3.6-35B-A3B (35B MoE, 34.7B total params) loads at 69.3GB in bf16 on a single H100 80GB. With LoRA r=8 adding 4.1M trainable params and gradient checkpointing, total memory is ~68.7GB (84% of 81.5GB). model.gradient_checkpointing_enable() + model.enable_input_require_grads() replaces prepare_model_for_kbit_training for non-quantized models. No quantization needed — bf16 fits.",
+    "tags": [
+      "training",
+      "qwen3.6",
+      "infrastructure",
+      "hardware"
+    ]
+  },
+  "raw_source_line": "{\"query\":\"Qwen 3.6-35B-A3B fits single H100 with bf16 LoRA\",\"answer\":\"The Qwen3.6-35B-A3B (35B MoE, 34.7B total params) loads at 69.3GB in bf16 on a single H100 80GB. With LoRA r=8 adding 4.1M trainable params and gradient checkpointing, total memory is ~68.7GB (84% of 81.5GB). model.gradient_checkpointing_enable() + model.enable_input_require_grads() replaces prepare_model_for_kbit_training for non-quantized models. No quantization needed — bf16 fits.\",\"tags\":[\"training\",\"qwen3.6\",\"infrastructure\",\"hardware\"]}",
+  "provenance": {
+    "source_bucket": "data/distilled-from-tmp/brain_facts.jsonl",
+    "dedup_rule": "sha256(normalize(sig(record)))",
+    "normalize_rule": "collapse all whitespace runs to a single space",
+    "sig_rule": "first matching pair in order [content,role][prompt,response][query,response][instruction,output][input,output][solution,completion][question,answer] joined by 0x1f; else sorted-json",
+    "raw_sha256": "2e236df3f091af6ffb0c1279a9ca3d20b6bc433ad52b1dae61db5f045df8982f",
+    "canonical_content_sha256": "c20eb43142ad598aede00c11efad434418c71c60da89395e3668e320e2beec96",
+    "copies_in_source_file": 1
+  }
+}

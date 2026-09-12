@@ -96,6 +96,17 @@ python3 run_deepbrain_eval.py
 
 ---
 
+## Traced data sample
+
+One real, delivered record with its full provenance chain — inspectable and independently
+verifiable from the file alone: [`samples/`](./samples/).
+
+It shows the derivation rule end to end: raw source line → `sha256(normalize(sig(record)))` →
+canonical record. One record, not a corpus. The hashes in it are recomputable from the
+published bytes; if they match, the rule is honest.
+
+---
+
 Built by **CertainLogic** — deterministic AI infrastructure.
 
 Proof, not promises.
